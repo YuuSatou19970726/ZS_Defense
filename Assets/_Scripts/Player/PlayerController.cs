@@ -26,8 +26,8 @@ namespace ZSDefense
 
         private void PlayerTask()
         {
-            if (this.playerTask != null)
-                this.playerTask = GetComponent<PlayerTask>();
+            if (this.playerTask != null) return;
+            this.playerTask = GetComponent<PlayerTask>();
         }
     }
 }

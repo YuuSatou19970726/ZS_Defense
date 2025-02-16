@@ -7,6 +7,8 @@ namespace ZSDefense
     public class PlayerBase : CustomMonobehaviour
     {
         protected PlayerData playerData;
+        public int Health => playerData.health;
+        public int MaxHealth => playerData.maxHealth;
 
         protected CharacterController characterController;
         protected Animator animator;
