@@ -40,4 +40,9 @@ namespace ZSDefense
         public const string JUMP_TRIGGER = "Jump";
         public const string MOVE_FLOAT = "Move";
     }
+
+    public class PlayerPrefTags
+    {
+        public const string PLAYER_NAME = "playerName";
+    }
 }
