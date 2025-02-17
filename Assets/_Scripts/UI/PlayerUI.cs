@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace ZSDefense
 {
-    public class PlayerUI : MonoBehaviour
+    public class PlayerUI : MonoBehaviourPun
     {
         [SerializeField]
         private Vector3 screenOffset = new Vector3(0f, 30f, 0f);

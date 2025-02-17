@@ -73,12 +73,6 @@ namespace ZSDefense
 
         public void QuickJoin()
         {
-            Debug.Log(this.roomInfos.Count);
-            for (int i = 0; i < this.roomInfos.Count; i++)
-            {
-                Debug.Log(this.roomInfos[i].Name);
-            }
-
             if (this.roomInfos.Count > 0)
             {
                 this.JoinRoom(this.roomInfos[Random.Range(0, this.roomInfos.Count)].Name);
@@ -165,7 +159,7 @@ namespace ZSDefense
 
         public override void OnJoinedRoom()
         {
-            Debug.Log(PhotonNetwork.CurrentRoom.Name);
+            // Debug.Log(PhotonNetwork.CurrentRoom.Name);
             this.StartGame();
 
             //List Player

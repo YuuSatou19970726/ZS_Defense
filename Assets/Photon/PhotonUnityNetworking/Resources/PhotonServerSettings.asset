@@ -34,9 +34,14 @@ MonoBehaviour:
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - SyncPosition
+  - InstantiateUI
+  - SyncAnimationMove
+  - SyncAnimationAttack
+  - SyncAnimationJump
+  - SyncRotation
   - ClickRpc
   - DestroyRpc
-  - RespawnRpc
   - DestroySpaceship
   - Fire
   - RespawnSpaceship

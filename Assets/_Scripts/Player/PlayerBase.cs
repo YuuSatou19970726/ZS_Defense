@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 namespace ZSDefense
 {
-    public class PlayerBase : CustomMonobehaviour
+    public class PlayerBase : MonoBehaviourPun
     {
         protected PlayerData playerData;
         public int Health => playerData.health;
@@ -17,13 +18,13 @@ namespace ZSDefense
         protected float timeAttackStart = -1f;
         protected float timeDie = -1f;
 
-        protected override void Awake()
+        private void Awake()
         {
             this.LoadPlayerData();
-            base.Awake();
+            this.LoadComponents();
         }
 
-        protected override void LoadComponents()
+        protected void LoadComponents()
         {
             this.characterController = GetComponent<CharacterController>();
             this.animator = GetComponent<Animator>();

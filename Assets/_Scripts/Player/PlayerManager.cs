@@ -13,9 +13,6 @@ namespace ZSDefense
         private static GameObject localPlayerInstance;
         public static GameObject LocalPlayerInstance => localPlayerInstance;
 
-        [SerializeField]
-        private GameObject playerUiPrefab;
-
         private bool leavingRoom = false;
 
         private void Awake()
@@ -30,15 +27,6 @@ namespace ZSDefense
 
         private void Start()
         {
-            if (this.playerUiPrefab != null)
-            {
-                GameObject uiPlayer = Instantiate(this.playerUiPrefab);
-                uiPlayer.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
-            }
-
-            CameraMotor cameraMotor = GameObject.FindObjectOfType<CameraMotor>();
-            cameraMotor.LoadTransforms();
-
             InputManager.Instance.SetProcessInputs(true);
         }
 
