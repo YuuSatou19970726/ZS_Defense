@@ -68,10 +68,10 @@ namespace ZSDefense
                 this.characterControllerHeight = characterController.height;
 
 
-            this.playerNameText.text = "kuuhaku";
+            this.playerNameText.text = "Player Name";
 
-            // if (playerNameText != null)
-            //     this.playerNameText.text = this.target.photonView.Owner.NickName;
+            if (playerNameText != null)
+                this.playerNameText.text = this.target.photonView.Owner.NickName;
         }
     }
 }

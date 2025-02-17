@@ -36,6 +36,9 @@ namespace ZSDefense
                 uiPlayer.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
             }
 
+            CameraMotor cameraMotor = GameObject.FindObjectOfType<CameraMotor>();
+            cameraMotor.LoadTransforms();
+
             InputManager.Instance.SetProcessInputs(true);
         }
 

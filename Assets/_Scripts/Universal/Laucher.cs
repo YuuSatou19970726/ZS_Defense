@@ -12,10 +12,14 @@ namespace ZSDefense
         private static Laucher instance;
         public static Laucher Instance => instance;
 
+        [SerializeField]
+        private MainMenuUI mainMenuUI;
+
+        List<RoomInfo> roomInfos;
+
         private bool hasSetNick = false;
 
-        [SerializeField]
-        private string[] allMap;
+        private string[] allMap = { SceneTags.AREA_0 };
 
         private void Awake()
         {
@@ -25,8 +29,8 @@ namespace ZSDefense
 
         private void Start()
         {
-            this.CloseMenus();
-            Debug.Log("Connecting to Network...");
+            this.mainMenuUI.SetLoadingText("Connecting to Network...");
+            this.mainMenuUI.OpenLoadingScreen();
 
             if (!PhotonNetwork.IsConnected)
             {
@@ -37,9 +41,21 @@ namespace ZSDefense
             Cursor.visible = true;
         }
 
+        public void SetNickName()
+        {
+            string playerName = this.mainMenuUI.GetNameInput();
+            if (!string.IsNullOrEmpty(playerName))
+            {
+                PhotonNetwork.NickName = playerName;
+                PlayerPrefs.SetString(PlayerPrefTags.PLAYER_NAME, playerName);
+                this.mainMenuUI.OpenMenu();
+                this.hasSetNick = true;
+            }
+        }
+
         public void CreateRoom()
         {
-            string roomName = "";
+            string roomName = Random.Range(0, 1000).ToString();
 
             if (!string.IsNullOrEmpty(roomName))
             {
@@ -49,58 +65,44 @@ namespace ZSDefense
                 };
 
                 PhotonNetwork.CreateRoom(roomName, options);
-                this.CloseMenus();
-                //UI open Loading
-                Debug.Log("Creating Room...");
+
+                this.mainMenuUI.SetLoadingText("Creating Room...");
+                this.mainMenuUI.OpenLoadingScreen();
             }
         }
 
-        private void CloseMenus()
+        public void QuickJoin()
         {
+            Debug.Log(this.roomInfos.Count);
+            for (int i = 0; i < this.roomInfos.Count; i++)
+            {
+                Debug.Log(this.roomInfos[i].Name);
+            }
 
-        }
-
-        private void CloseErrorScreen()
-        {
-            this.CloseMenus();
-            //UI open Main Menu
-        }
-
-        public void LeaveRoom()
-        {
-            PhotonNetwork.LeaveRoom();
-            this.CloseMenus();
-            //UI open Loading
-            Debug.Log("Leaving Room");
-        }
-
-        public void JoinRoom(RoomInfo roomInfo)
-        {
-            if (PhotonNetwork.IsConnected)
-            { PhotonNetwork.JoinRoom(roomInfo.Name); }
+            if (this.roomInfos.Count > 0)
+            {
+                this.JoinRoom(this.roomInfos[Random.Range(0, this.roomInfos.Count)].Name);
+            }
             else
             {
-                Debug.LogWarning("Unable to join room because not connected to Photon network.");
-                return;
+                RoomOptions options = new RoomOptions
+                {
+                    MaxPlayers = 8,
+                };
+                PhotonNetwork.CreateRoom(Random.Range(0, 1000).ToString(), options);
             }
-            this.CloseMenus();
-            //UI open Loading
+
+
+            this.mainMenuUI.SetLoadingText("Join Room...");
+            this.mainMenuUI.OpenLoadingScreen();
         }
 
-        public void SetNickName()
+        public void QuitGame()
         {
-            string playerName = "";
-            if (!string.IsNullOrEmpty(playerName))
-            {
-                PhotonNetwork.NickName = playerName;
-                PlayerPrefs.SetString(PlayerPrefTags.PLAYER_NAME, playerName);
-                this.CloseMenus();
-                //UI open Main Menu
-                this.hasSetNick = true;
-            }
+            Application.Quit();
         }
 
-        public void StartGame()
+        private void StartGame()
         {
             if (PhotonNetwork.IsMasterClient)
             {
@@ -109,18 +111,32 @@ namespace ZSDefense
             }
         }
 
-        public void QuickJoin()
+        private void JoinRoom(string roomName)
         {
-            RoomOptions options = new RoomOptions
+            if (PhotonNetwork.IsConnected)
+            { PhotonNetwork.JoinRoom(roomName); }
+            else
             {
-                MaxPlayers = 8,
-            };
-            PhotonNetwork.CreateRoom("Demo", options);
-            this.CloseMenus();
-            //UI open Loading
+                Debug.LogWarning("Unable to join room because not connected to Photon network.");
+                return;
+            }
+            this.mainMenuUI.SetLoadingText("Join Room...");
+            this.mainMenuUI.OpenLoadingScreen();
         }
 
-        //override
+        private void CloseErrorScreen()
+        {
+            this.mainMenuUI.OpenMenu();
+        }
+
+        public void LeaveRoom()
+        {
+            PhotonNetwork.LeaveRoom();
+            this.mainMenuUI.SetLoadingText("Leaving Room...");
+            this.mainMenuUI.OpenLoadingScreen();
+        }
+
+        //Pun Callback
         public override void OnConnectedToMaster()
         {
             PhotonNetwork.JoinLobby();
@@ -131,15 +147,15 @@ namespace ZSDefense
 
         public override void OnJoinedLobby()
         {
-            this.CloseMenus();
-            //UI open Main Menu Screen
+            this.mainMenuUI.OpenMenu();
 
             PhotonNetwork.NickName = Random.Range(0, 1000).ToString();
 
             if (!hasSetNick)
             {
+                this.mainMenuUI.OpenNameInputScreenScreen();
                 if (PlayerPrefs.HasKey(PlayerPrefTags.PLAYER_NAME))
-                    Debug.Log(PlayerPrefs.GetString(PlayerPrefTags.PLAYER_NAME));
+                    this.mainMenuUI.SetNameInput(PlayerPrefs.GetString(PlayerPrefTags.PLAYER_NAME));
             }
             else
             {
@@ -149,16 +165,15 @@ namespace ZSDefense
 
         public override void OnJoinedRoom()
         {
-            this.CloseMenus();
-            //UI open Room Screen
             Debug.Log(PhotonNetwork.CurrentRoom.Name);
+            this.StartGame();
 
             //List Player
 
-            if (PhotonNetwork.IsMasterClient)
-                Debug.Log("Master");
-            else
-                Debug.Log("Not Master");
+            // if (PhotonNetwork.IsMasterClient)
+            //     Debug.Log("Master");
+            // else
+            //     Debug.Log("Not Master");
         }
 
         public override void OnJoinRandomFailed(short returnCode, string message)
@@ -175,13 +190,12 @@ namespace ZSDefense
 
         public override void OnLeftRoom()
         {
-            this.CloseMenus();
-            //UI open Main Menu
+            this.mainMenuUI.OpenMenu();
         }
 
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
-
+            this.roomInfos = roomList;
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -196,10 +210,10 @@ namespace ZSDefense
 
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
-            if (PhotonNetwork.IsMasterClient)
-                Debug.Log("Master");
-            else
-                Debug.Log("Not Master");
+            // if (PhotonNetwork.IsMasterClient)
+            //     Debug.Log("Master");
+            // else
+            //     Debug.Log("Not Master");
         }
 
     }
