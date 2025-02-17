@@ -6,6 +6,7 @@ namespace ZSDefense
 {
     public class SceneTags
     {
+        public const string MAIN_MENU = "MainMenu";
         public const string AREA_0 = "Area_00";
     }
 

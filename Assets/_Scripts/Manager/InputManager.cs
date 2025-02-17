@@ -18,6 +18,8 @@ namespace ZSDefense
         private bool checkedLeftClick;
         public bool CheckedLeftClick => checkedLeftClick;
 
+        private bool checkedProcessInputs = false;
+
         private void Awake()
         {
             if (instance == null)
@@ -26,7 +28,13 @@ namespace ZSDefense
 
         private void Update()
         {
-            this.GetDirection();
+            if (this.checkedProcessInputs)
+                this.GetDirection();
+        }
+
+        public void SetProcessInputs(bool isCheck)
+        {
+            this.checkedProcessInputs = isCheck;
         }
 
         private void GetDirection()

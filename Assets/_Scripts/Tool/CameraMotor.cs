@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ZSDefense
 {
-    public class CameraMotor : CustomMonobehaviour
+    public class CameraMotor : MonoBehaviour
     {
         private Transform lookAt;
 
@@ -15,24 +15,20 @@ namespace ZSDefense
         private float distance = 9.0f;
         private float yOffset = 10.0f;
 
-        protected override void Start()
+        private void Start()
         {
             this.offset = new Vector3(0, yOffset, -1f * distance);
         }
 
-        protected override void FixedUpdate()
+        private void FixedUpdate()
         {
+            if (this.lookAt == null) return;
             this.desiredPosition = this.lookAt.position + this.offset;
             transform.position = Vector3.Lerp(transform.position, this.desiredPosition, this.smoothSpeed * Time.deltaTime);
             transform.LookAt(lookAt.position + Vector3.up);
         }
 
-        protected override void LoadComponents()
-        {
-            this.LoadTransforms();
-        }
-
-        private void LoadTransforms()
+        public void LoadTransforms()
         {
             this.lookAt = GameObject.FindWithTag(Tags.PLAYER).transform;
         }

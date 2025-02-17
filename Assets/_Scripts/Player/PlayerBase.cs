@@ -45,6 +45,11 @@ namespace ZSDefense
             this.areaAttack.SetActive(IsAttack());
         }
 
+        public void SetHealth(int health)
+        {
+            this.playerData.health = health;
+        }
+
         public void TakeDamage(int takeDamage)
         {
             this.playerData.health -= takeDamage;
