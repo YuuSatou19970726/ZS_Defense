@@ -25,7 +25,6 @@ namespace ZSDefense
         private void Start()
         {
             this.offset = new Vector3(0, CameraThirdPersonSetup.yOffset, -1f * CameraThirdPersonSetup.distance);
-            // camera = Camera.main;
 
             if (!photonView.IsMine)
             {

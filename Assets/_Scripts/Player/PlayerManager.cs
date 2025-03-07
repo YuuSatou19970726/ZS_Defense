@@ -13,7 +13,7 @@ namespace ZSDefense
         private static GameObject localPlayerInstance;
         public static GameObject LocalPlayerInstance => localPlayerInstance;
 
-        private bool leavingRoom = false;
+        // private bool leavingRoom = false;
 
         private void Awake()
         {
@@ -27,6 +27,9 @@ namespace ZSDefense
 
         private void Start()
         {
+            if (photonView.IsMine)
+                UIManager.Instance.CreatePlayerUIPrefabs(this);
+
             InputManager.Instance.SetProcessInputs(true);
         }
 
@@ -34,11 +37,18 @@ namespace ZSDefense
         {
             if (!photonView.IsMine) return;
 
-            if (playerController.playerMovement.IsDead() && !this.leavingRoom)
-            {
-                this.leavingRoom = PhotonNetwork.LeaveRoom();
-                InputManager.Instance.SetProcessInputs(false);
-            }
+            // if (playerController.playerMovement.IsDead() && !this.leavingRoom)
+            // {
+            //     this.leavingRoom = PhotonNetwork.LeaveRoom();
+            //     InputManager.Instance.SetProcessInputs(false);
+            // }
+            UIManager.Instance.UpdateInfoPlayer(this);
+        }
+
+        private void FixedUpdate()
+        {
+            if (!photonView.IsMine) return;
+            UIManager.Instance.UpdatePositionPlayer(this, transform);
         }
 
         public override void OnDisable()
@@ -68,7 +78,7 @@ namespace ZSDefense
 
         public override void OnLeftRoom()
         {
-            this.leavingRoom = false;
+            // this.leavingRoom = false;
         }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

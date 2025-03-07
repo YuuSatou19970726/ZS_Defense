@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ZSDefense
 {
-    public class PlayerBase : MonoBehaviourPun
+    public class PlayerBase : MonoBehaviourPun, IPunObservable
     {
         protected PlayerData playerData;
         public int Health => playerData.health;
@@ -80,6 +80,20 @@ namespace ZSDefense
             transform.localScale = Vector3.one;
             this.timeDie = -1;
             this.playerData.health = this.playerData.maxHealth;
+        }
+
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.IsWriting)
+            {
+                stream.SendNext(transform.position);
+                stream.SendNext(transform.rotation);
+            }
+            else
+            {
+                transform.position = (Vector3)stream.ReceiveNext();
+                transform.rotation = (Quaternion)stream.ReceiveNext();
+            }
         }
     }
 }

@@ -72,7 +72,7 @@ namespace ZSDefense
 
         void LoadArena()
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            // if (!PhotonNetwork.IsMasterClient) return;
 
             PhotonNetwork.LoadLevel(SceneTags.AREA_0);
         }
